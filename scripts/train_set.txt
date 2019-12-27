@@ -1,0 +1,44 @@
+### Using labels only
+python train.py --name label2city_512p
+
+### Adding instances and encoded features
+python train.py --name label2city_512p_feat --instance_feat
+
+
+### Using labels only
+ python -m torch.distributed.launch train.py --name label2city_512p --fp16
+
+######## Multi-GPU training example #######
+python -m torch.distributed.launch train.py --name label2city_512p --batchSize 8 --gpu_ids 0,1,2,3,4,5,6,7 --fp16
+
+######## Multi-GPU training example #######
+python train.py --name label2city_512p --batchSize 8 --gpu_ids 0,1,2,3,4,5,6,7
+
+
+############## To train images at 2048 x 1024 resolution after training 1024 x 512 resolution models #############
+##### Using GPUs with 12G memory (not tested)
+# Using labels only
+python train.py --name label2city_1024p --netG local --ngf 32 --num_D 3 --load_pretrain checkpoints/label2city_512p/ --niter_fix_global 20 --resize_or_crop crop --fineSize 1024
+
+############## To train images at 2048 x 1024 resolution after training 1024 x 512 resolution models #############
+######## Using GPUs with 24G memory
+# Using labels only
+python train.py --name label2city_1024p --netG local --ngf 32 --num_D 3 --load_pretrain checkpoints/label2city_512p/ --niter 50 --niter_decay 50 --niter_fix_global 10 --resize_or_crop none
+
+############## To train images at 2048 x 1024 resolution after training 1024 x 512 resolution models #############
+##### Using GPUs with 12G memory (not tested)
+# First precompute feature maps and save them
+python precompute_feature_maps.py --name label2city_512p_feat;
+# Adding instances and encoded features
+python train.py --name label2city_1024p_feat --netG local --ngf 32 --num_D 3 --load_pretrain checkpoints/label2city_512p_feat/ --niter_fix_global 20 --resize_or_crop crop --fineSize 896 --instance_feat --load_features
+
+############## To train images at 2048 x 1024 resolution after training 1024 x 512 resolution models #############
+######## Using GPUs with 24G memory
+# First precompute feature maps and save them
+python precompute_feature_maps.py --name label2city_512p_feat;
+# Adding instances and encoded features
+python train.py --name label2city_1024p_feat --netG local --ngf 32 --num_D 3 --load_pretrain checkpoints/label2city_512p_feat/ --niter 50 --niter_decay 50 --niter_fix_global 10 --resize_or_crop none --instance_feat --load_features
+
+
+
+

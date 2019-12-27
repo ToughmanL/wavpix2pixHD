@@ -44,6 +44,7 @@ class feature_pic:
                   numpy.tile(numpy.arange(0, num_frames * frame_step, frame_step), (frame_length, 1)).T
         frames = pad_signal[indices.astype(numpy.int32, copy=False)]
 
+
         frames *= numpy.hamming(frame_length)
         #frames *= 0.54 - 0.46 * numpy.cos((2 * numpy.pi * n) / (frame_length - 1))  # Explicit Implementation **
         # NFFT = 512
